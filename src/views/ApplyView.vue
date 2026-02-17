@@ -2,80 +2,74 @@
   <MainLayout>
     <div class="apply-container">
       <a-card title="发起申请" :bordered="false">
-      <a-form :model="formState" layout="vertical">
-        <a-form-item label="选择流程">
-          <a-select
-            v-model:value="formState.definitionId"
-            placeholder="请选择流程"
-            @change="handleDefinitionChange"
-          >
-            <a-select-option
-              v-for="definition in publishedDefinitions"
-              :key="definition.id"
-              :value="definition.id"
+        <a-form :model="formState" layout="vertical">
+          <a-form-item label="选择流程">
+            <a-select
+              v-model:value="formState.definitionId"
+              placeholder="请选择流程"
+              @change="handleDefinitionChange"
             >
-              {{ definition.name }}
-            </a-select-option>
-          </a-select>
-        </a-form-item>
+              <a-select-option
+                v-for="definition in publishedDefinitions"
+                :key="definition.id"
+                :value="definition.id"
+              >
+                {{ definition.name }}
+              </a-select-option>
+            </a-select>
+          </a-form-item>
 
-        <a-form-item label="业务键">
-          <a-input
-            v-model:value="formState.businessKey"
-            placeholder="请输入业务键（可选）"
-          />
-        </a-form-item>
-
-        <template v-if="selectedDefinition">
-          <a-divider>申请信息</a-divider>
-
-          <a-form-item
-            v-for="field in formFields"
-            :key="field.name"
-            :label="field.label"
-          >
+          <a-form-item label="业务键">
             <a-input
-              v-if="field.type === 'text'"
-              v-model:value="formState.variables[field.name]"
-              :placeholder="field.placeholder"
-            />
-            <a-input-number
-              v-else-if="field.type === 'number'"
-              v-model:value="formState.variables[field.name]"
-              :placeholder="field.placeholder"
-              style="width: 100%"
-            />
-            <a-date-picker
-              v-else-if="field.type === 'date'"
-              v-model:value="formState.variables[field.name]"
-              style="width: 100%"
-            />
-            <a-textarea
-              v-else-if="field.type === 'textarea'"
-              v-model:value="formState.variables[field.name]"
-              :placeholder="field.placeholder"
-              :rows="4"
+              v-model:value="formState.businessKey"
+              placeholder="请输入业务键（可选）"
             />
           </a-form-item>
 
-          <a-divider>审批预览</a-divider>
-          <ApprovalPreview
-            :definition="selectedDefinition"
-            :variables="formState.variables"
-          />
-        </template>
+          <template v-if="selectedDefinition">
+            <a-divider>申请信息</a-divider>
 
-        <a-form-item>
-          <a-space>
-            <a-button type="primary" @click="handleSubmit" :loading="loading">
-              提交申请
-            </a-button>
-            <a-button @click="handleReset">重置</a-button>
-          </a-space>
-        </a-form-item>
-      </a-form>
-    </a-card>
-  </div>
+            <a-form-item
+              v-for="field in formFields"
+              :key="field.name"
+              :label="field.label"
+            >
+              <a-input
+                v-if="field.type === 'text'"
+                v-model:value="formState.variables[field.name]"
+                :placeholder="field.placeholder"
+              />
+              <a-input-number
+                v-else-if="field.type === 'number'"
+                v-model:value="formState.variables[field.name]"
+                :placeholder="field.placeholder"
+                style="width: 100%"
+              />
+              <a-date-picker
+                v-else-if="field.type === 'date'"
+                v-model:value="formState.variables[field.name]"
+                style="width: 100%"
+              />
+              <a-textarea
+                v-else-if="field.type === 'textarea'"
+                v-model:value="formState.variables[field.name]"
+                :placeholder="field.placeholder"
+                :rows="4"
+              />
+            </a-form-item>
+          </template>
+
+          <a-form-item>
+            <a-space>
+              <a-button type="primary" @click="handleSubmit" :loading="loading">
+                提交申请
+              </a-button>
+              <a-button @click="handleReset">重置</a-button>
+            </a-space>
+          </a-form-item>
+        </a-form>
+      </a-card>
+    </div>
   </MainLayout>
 </template>
 
@@ -85,7 +79,6 @@ import { message } from 'ant-design-vue';
 import MainLayout from '../components/layout/MainLayout.vue';
 import { useProcessStore } from '../stores/process';
 import { useInstanceStore } from '../stores/instance';
-import ApprovalPreview from '../components/ApprovalPreview.vue';
 
 const processStore = useProcessStore();
 const instanceStore = useInstanceStore();
