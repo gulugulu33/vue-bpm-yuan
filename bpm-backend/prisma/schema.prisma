@@ -1,0 +1,106 @@
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id        String   @id @default(uuid())
+  username  String   @unique
+  email     String   @unique
+  password  String
+  fullName  String?
+  role      String   @default("user")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("users")
+  @@index([username])
+  @@index([email])
+}
+
+model ProcessDefinition {
+  id          String   @id @default(uuid())
+  name        String
+  description String?
+  version     Int      @default(1)
+  status      String   @default("draft")
+  definition  String
+  createdBy   String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  instances   ProcessInstance[]
+  tasks       Task[]
+
+  @@map("process_definitions")
+  @@index([status])
+  @@index([createdBy])
+}
+
+model ProcessInstance {
+  id               String   @id @default(uuid())
+  definitionId     String
+  definitionVersion Int
+  businessKey     String?
+  status           String   @default("running")
+  variables        String?
+  currentNodeIds    String?
+  createdAt        DateTime @default(now())
+  startedAt        DateTime @default(now())
+  endedAt          DateTime?
+  startedBy        String
+
+  definition       ProcessDefinition @relation(fields: [definitionId], references: [id], onDelete: Cascade)
+  histories        ProcessHistory[]
+  tasks            Task[]
+
+  @@map("process_instances")
+  @@index([definitionId])
+  @@index([status])
+  @@index([businessKey])
+}
+
+model ProcessHistory {
+  id        String   @id @default(uuid())
+  instanceId String
+  nodeId    String
+  nodeName  String
+  type      String
+  timestamp DateTime @default(now())
+  operator  String?
+  comment   String?
+
+  instance  ProcessInstance @relation(fields: [instanceId], references: [id], onDelete: Cascade)
+
+  @@map("process_histories")
+  @@index([instanceId])
+  @@index([timestamp])
+}
+
+model Task {
+  id              String   @id @default(uuid())
+  instanceId      String
+  definitionId    String
+  nodeId         String
+  nodeName        String
+  status          String   @default("pending")
+  assignee        String?
+  candidateUsers  String?
+  candidateGroups String?
+  variables       String?
+  createdAt       DateTime @default(now())
+  claimedAt       DateTime?
+  completedAt     DateTime?
+
+  instance        ProcessInstance @relation(fields: [instanceId], references: [id], onDelete: Cascade)
+  definition      ProcessDefinition @relation(fields: [definitionId], references: [id], onDelete: Cascade)
+
+  @@map("tasks")
+  @@index([instanceId])
+  @@index([status])
+  @@index([assignee])
+}
