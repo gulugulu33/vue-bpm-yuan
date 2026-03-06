@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia';
 import { ref, computed } from 'vue';
 import { authApi } from '../api';
+import { initializeWebSocket, disconnectWebSocket } from '../services/websocket.service';
 
 export interface User {
   id: string;
@@ -24,6 +25,10 @@ export const useAuthStore = defineStore('auth', () => {
       token.value = data.token;
       user.value = data.user;
       localStorage.setItem('token', data.token);
+      
+      // 初始化 WebSocket 连接
+      initializeWebSocket(data.token);
+      
       return data;
     } finally {
       loading.value = false;
@@ -49,6 +54,9 @@ export const useAuthStore = defineStore('auth', () => {
     token.value = null;
     user.value = null;
     localStorage.removeItem('token');
+    
+    // 断开 WebSocket 连接
+    disconnectWebSocket();
   }
 
   function initAuth() {

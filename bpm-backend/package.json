@@ -19,6 +19,7 @@
     "@koa/cors": "^5.0.0",
     "@koa/router": "^15.3.0",
     "@prisma/client": "^5.22.0",
+    "@types/ws": "^8.18.1",
     "bcrypt": "^6.0.0",
     "joi": "^18.0.2",
     "jsonwebtoken": "^9.0.3",
@@ -26,7 +27,8 @@
     "koa-bodyparser": "^4.4.1",
     "koa-helmet": "^9.0.0",
     "prisma": "^5.22.0",
-    "winston": "^3.19.0"
+    "winston": "^3.19.0",
+    "ws": "^8.19.0"
   },
   "devDependencies": {
     "@types/bcrypt": "^6.0.0",

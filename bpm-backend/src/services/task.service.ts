@@ -1,6 +1,7 @@
 import prisma from '../config/database.config';
 import { Task, PaginationParams, PaginationResult } from '../types';
 import * as processService from './process.service';
+import { getWebSocketService } from './websocket.service';
 
 export const getTasks = async (
   params: PaginationParams & { assignee?: string }
@@ -102,6 +103,14 @@ export const completeTask = async (
 
   await continueProcess(task.instanceId);
 
+  // 发送任务审批结果通知
+  try {
+    const wsService = getWebSocketService();
+    wsService.sendTaskResult(task.assignee!, taskId, task.instanceId, 'approved', comment);
+  } catch (error) {
+    console.error('WebSocket send error:', error);
+  }
+
   return updatedTask;
 };
 
@@ -153,6 +162,14 @@ export const rejectTask = async (
       endedAt: new Date(),
     },
   });
+
+  // 发送任务拒绝结果通知
+  try {
+    const wsService = getWebSocketService();
+    wsService.sendTaskResult(task.assignee!, taskId, task.instanceId, 'rejected', comment);
+  } catch (error) {
+    console.error('WebSocket send error:', error);
+  }
 
   return updatedTask;
 };
@@ -284,6 +301,14 @@ const continueProcess = async (instanceId: string): Promise<void> => {
         },
       });
       newNodeIds.push(node.id);
+
+      // 发送任务分配通知
+      try {
+        const wsService = getWebSocketService();
+        wsService.sendTaskAssigned(assignee, node.id, node.label || node.id, instanceId);
+      } catch (error) {
+        console.error('WebSocket send error:', error);
+      }
     } else if (node.type === 'end') {
       await prisma.processInstance.update({
         where: { id: instanceId },

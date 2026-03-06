@@ -72,6 +72,12 @@ const routes = [
     component: () => import('../views/VirtualListDemo.vue'),
     meta: { requiresAuth: true },
   },
+  {
+    path: '/simple-test',
+    name: 'SimpleTest',
+    component: () => import('../views/SimpleTest.vue'),
+    meta: { requiresAuth: true },
+  },
 ];
 
 const router = createRouter({

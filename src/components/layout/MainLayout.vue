@@ -26,6 +26,9 @@
         <a-menu-item key="/virtual-list-demo" @click="navigate('/virtual-list-demo')">
           <span>虚拟列表演示</span>
         </a-menu-item>
+        <a-menu-item key="/simple-test" @click="navigate('/simple-test')">
+          <span>通知测试</span>
+        </a-menu-item>
       </a-menu>
     </a-layout-sider>
     <a-layout>
@@ -33,6 +36,7 @@
         <div style="display: flex; justify-content: space-between; align-items: center;">
           <span style="font-size: 16px; font-weight: 500;">{{ pageTitle }}</span>
           <a-space>
+            <NotificationCenter />
             <ThemeSwitcher />
             <a-dropdown v-if="authStore.user">
               <a-space style="cursor: pointer;">
@@ -77,6 +81,7 @@ import { useRouter, useRoute } from 'vue-router';
 import { useAuthStore } from '../../stores/auth';
 import { DownOutlined, UserOutlined, SettingOutlined, LogoutOutlined } from '@ant-design/icons-vue';
 import ThemeSwitcher from '../ThemeSwitcher.vue';
+import NotificationCenter from '../NotificationCenter.vue';
 
 const router = useRouter();
 const route = useRoute();
@@ -93,6 +98,7 @@ const pageTitle = computed(() => {
     '/instances': '流程实例',
     '/tasks': '任务中心',
     '/virtual-list-demo': '虚拟列表演示',
+    '/simple-test': '通知测试',
   };
   return titles[route.path] || '首页';
 });

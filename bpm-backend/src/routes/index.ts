@@ -3,6 +3,7 @@ import * as authController from '../controllers/auth.controller';
 import * as processController from '../controllers/process.controller';
 import * as instanceController from '../controllers/instance.controller';
 import * as taskController from '../controllers/task.controller';
+import * as testController from '../controllers/test.controller';
 import { authMiddleware } from '../middleware/auth.middleware';
 
 const router = new Router({ prefix: '/api/v1' });
@@ -26,5 +27,7 @@ router.get('/tasks/my-pending', authMiddleware, taskController.getMyPendingTasks
 router.post('/tasks/:id/complete', authMiddleware, taskController.completeTask);
 router.post('/tasks/:id/reject', authMiddleware, taskController.rejectTask);
 router.post('/tasks/:id/delegate', authMiddleware, taskController.delegateTask);
+
+router.post('/test/notification', authMiddleware, testController.sendTestNotification);
 
 export default router;
